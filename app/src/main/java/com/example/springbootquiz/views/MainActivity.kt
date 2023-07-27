@@ -26,11 +26,56 @@ class MainActivity : AppCompatActivity() {
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        fetchData()
 
 
+
+
+        binding.nxtbtn.setOnClickListener {
+            if (index < questionList.size - 1) {
+                // Move to the next question
+                index++
+                //question
+            } else if (index == questionList.size - 1) {
+                // Display a toast when reaching the end of the question list
+                Toast.makeText(this, "End of the questions", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 
+    private fun fetchData() {
+        val url = "http://192.168.31.131:8080/getQuestion"
+        val stringRequest = StringRequest(Request.Method.GET, url, { response ->
+            val jsonArray = JSONArray(response)
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject = jsonArray.getJSONObject(i)
+                val id = jsonObject.getInt("id")
+                val title = jsonObject.getString("title")
+                val category = jsonObject.getString("category")
+                val option1 = jsonObject.getString("option1")
+                val option2 = jsonObject.getString("option2")
+                val option3 = jsonObject.getString("option3")
+                val option4 = jsonObject.getString("option4")
+                val rightAnswer = jsonObject.getString("rightanswer")
 
+                val question = Question(
+                    id = id,
+                    category = category,
+                    option1 = option1,
+                    option2 = option2,
+                    option3 = option3,
+                    option4 = option4,
+                    rightAnswer = rightAnswer,
+                    title = title
+                )
+                questionList.add(question)
+            }
+        }, {
+            Log.d("error", "$it")
+        })
+        val requestQueue = Volley.newRequestQueue(this)
+        requestQueue.add(stringRequest)
+    }
 
 }
