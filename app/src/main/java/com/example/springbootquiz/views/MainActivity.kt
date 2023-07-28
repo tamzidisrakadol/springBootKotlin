@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         fetchData()
-
+        setupQuestionView()
 
 
 
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             if (index < questionList.size - 1) {
                 // Move to the next question
                 index++
-                //question
+                setupQuestionView()
             } else if (index == questionList.size - 1) {
                 // Display a toast when reaching the end of the question list
                 Toast.makeText(this, "End of the questions", Toast.LENGTH_SHORT).show()
@@ -76,6 +76,24 @@ class MainActivity : AppCompatActivity() {
         })
         val requestQueue = Volley.newRequestQueue(this)
         requestQueue.add(stringRequest)
+    }
+
+
+    private fun setupQuestionView() {
+        if (questionList.isEmpty()) {
+            return // Return if the questionList is empty
+        }
+        val currentQuestion = questionList[index]
+        binding.questionTV.text = currentQuestion.title
+        binding.option1TV.text = currentQuestion.option1
+        binding.option2TV.text = currentQuestion.option2
+        binding.option3TV.text = currentQuestion.option3
+        binding.option4TV.text = currentQuestion.option4
+    }
+
+
+    private fun checkAnswer(){
+
     }
 
 }
