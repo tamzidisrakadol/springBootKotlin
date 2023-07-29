@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">springbootquiz</string>
+    <string name="java_question_will_be_shown">JAVA question will be shown</string>
+    <string name="option_of_java_quiz_1">Option of java quiz 1</string>
+</resources>
