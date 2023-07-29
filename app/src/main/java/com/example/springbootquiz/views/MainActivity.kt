@@ -1,5 +1,6 @@
 package com.example.springbootquiz.views
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -21,14 +22,13 @@ class MainActivity : AppCompatActivity() {
     private var index=0
 
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         fetchData()
-        setupQuestionView()
-
 
 
         binding.nxtbtn.setOnClickListener {
@@ -41,6 +41,25 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "End of the questions", Toast.LENGTH_SHORT).show()
             }
         }
+
+        binding.option1CV.setOnClickListener {
+            checkAnswer(questionList[index].option1)
+
+        }
+
+        binding.option2CV.setOnClickListener {
+            checkAnswer(questionList[index].option2)
+        }
+
+        binding.option3CV.setOnClickListener {
+            checkAnswer(questionList[index].option3)
+        }
+
+
+        binding.option4CV.setOnClickListener {
+            checkAnswer(questionList[index].option4)
+        }
+        
 
     }
 
@@ -64,13 +83,14 @@ class MainActivity : AppCompatActivity() {
                     category = category,
                     option1 = option1,
                     option2 = option2,
-                    option3 = option3,
+                    option3 = option3,                      
                     option4 = option4,
                     rightAnswer = rightAnswer,
                     title = title
                 )
                 questionList.add(question)
             }
+            setupQuestionView()
         }, {
             Log.d("error", "$it")
         })
@@ -89,11 +109,26 @@ class MainActivity : AppCompatActivity() {
         binding.option2TV.text = currentQuestion.option2
         binding.option3TV.text = currentQuestion.option3
         binding.option4TV.text = currentQuestion.option4
-    }
-
-
-    private fun checkAnswer(){
+        
 
     }
+
+
+    private fun  checkAnswer(userAnswer:String):Boolean{
+
+        val currentQuestionAns = questionList[index].rightAnswer
+
+        if (currentQuestionAns==userAnswer){
+            Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show()
+            index++
+            setupQuestionView()
+            return true
+        }else{
+            Toast.makeText(this, "incorrect", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+    }
+
 
 }
