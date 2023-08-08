@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        fetchData()
+      //  fetchData()
 
 
         binding.nxtbtn.setOnClickListener {
@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.option1CV.setOnClickListener {
             checkAnswer(questionList[index].option1)
-
         }
 
         binding.option2CV.setOnClickListener {
