@@ -4,6 +4,7 @@ import android.content.ContextParams
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -17,6 +18,7 @@ import com.example.springbootquiz.modal.User
 import com.example.springbootquiz.modal.UserLogin
 import com.example.springbootquiz.network.ApiClient
 import com.example.springbootquiz.network.ApiInterface
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -27,6 +29,7 @@ class MainActivity2 : AppCompatActivity() {
 
     private lateinit var binding: ActivityMain2Binding
     private var userList = mutableListOf<User>()
+    private var jwtToken:String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain2Binding.inflate(layoutInflater)
@@ -45,29 +48,54 @@ class MainActivity2 : AppCompatActivity() {
             if (email.isNotEmpty() && password.isNotEmpty()) {
 
                 val loginData = UserLogin(email, password)
-                try {
-                    val call = retrofit.getAccessLoginInfo(loginData)
-                    call.enqueue(object:Callback<LoginResponse>{
 
-                        override fun onResponse(
-                            call: Call<LoginResponse>,
-                            response: retrofit2.Response<LoginResponse>
-                        ) {
-                            if (response.isSuccessful){
-                                Log.d("body", "${response.body()}")
-                            }else{
-                                Log.d("body", response.errorBody().toString())
-                            }
-                        }
+                lifecycleScope.launch {
+                    val result = retrofit.getAccessLoginInfo(loginData)
+                    if (result!=null){
+                        Log.d("body","${result.body()}")
+                        jwtToken ="Bearer "+result.body()?.jwtToken.toString()
 
-                        override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                            Log.d("body","${t.message}")
-                        }
 
-                    })
-                }catch (e:Exception){
-                    Log.d("body","${e.message}")
+                    }else{
+                        Log.d("body", result.errorBody().toString())
+                    }
                 }
+
+                binding.customerListBtn.setOnClickListener {
+
+                    lifecycleScope.launch {
+                        val customerList = retrofit.getAllCustomerInfo(jwtToken)
+                        if (customerList!=null){
+
+                            Log.d("body","${customerList.body()}")
+                        }
+                    }
+                }
+
+
+//                try {
+//                    val call = retrofit.getAccessLoginInfo(loginData)
+//                    call.enqueue(object:Callback<LoginResponse>{
+//
+//                        override fun onResponse(
+//                            call: Call<LoginResponse>,
+//                            response: retrofit2.Response<LoginResponse>
+//                        ) {
+//                            if (response.isSuccessful){
+//                                Log.d("body", "${response.body()}")
+//                            }else{
+//                                Log.d("body", response.errorBody().toString())
+//                            }
+//                        }
+//
+//                        override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+//                            Log.d("body","${t.message}")
+//                        }
+//
+//                    })
+//                }catch (e:Exception){
+//                    Log.d("body","${e.message}")
+//                }
 
 
 
